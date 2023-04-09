@@ -1,7 +1,7 @@
 #0 means covered
 #1 means clear
 
-from firebase import Firebase
+#from firebase import Firebase
 import sys
 import os
 import datetime
@@ -50,26 +50,26 @@ def finalcommand(s1, s2, s3, s4):
 # 	return dateinfo
 
 def main():
-	config = {
-		"apiKey": "AIzaSyBkQ5z8Rs5IRP4lHoiWyXV9XVQHjAh-sEI",
-		"authDomain": "a-eye-for-the-blind.firebaseapp.com",
-		"storageBucket": "a-eye-for-the-blind.appspot.com",
-		"databaseURL": "https://a-eye-for-the-blind-default-rtdb.firebaseio.com/",
-	}
-	uid = "^^^^^^^^^^^"  # unique user ID, must set before running
-	email = 'saranggoel06@gmail.com'
-	password = '##########'
-	firebase = Firebase(config)
-	db = firebase.database()
-	auth = firebase.auth()
-	storage = firebase.storage()
+	# config = {
+	# 	"apiKey": "AIzaSyBkQ5z8Rs5IRP4lHoiWyXV9XVQHjAh-sEI",
+	# 	"authDomain": "a-eye-for-the-blind.firebaseapp.com",
+	# 	"storageBucket": "a-eye-for-the-blind.appspot.com",
+	# 	"databaseURL": "https://a-eye-for-the-blind-default-rtdb.firebaseio.com/",
+	# }
+	# uid = "^^^^^^^^^^^"  # unique user ID, must set before running
+	# email = 'saranggoel06@gmail.com'
+	# password = '##########'
+	# firebase = Firebase(config)
+	# db = firebase.database()
+	# auth = firebase.auth()
+	# storage = firebase.storage()
 
-	user = auth.sign_in_with_email_and_password(email, password)
-	user = auth.refresh(user['refreshToken'])
+	# user = auth.sign_in_with_email_and_password(email, password)
+	# user = auth.refresh(user['refreshToken'])
 
-	if uid == "" or email == "" or password == "":
-		print("Please set user UID, email, or password in the lines above!")
-		sys.exit()
+	# if uid == "" or email == "" or password == "":
+	# 	print("Please set user UID, email, or password in the lines above!")
+	# 	sys.exit()
 
 	engine = pyttsx3.init()
 	BATCH_SIZE = 1
@@ -91,10 +91,10 @@ def main():
 		s, img = cam.read()
 		cv2.imwrite("D:/A-Eye For The Blind/2dtodepth/infile1/filename.jpg", img)  # save image
 		# filename = uid + ' ' + time()
-		storage.child(f"images/i{str(x)}.jpg").put("D:/A-Eye For The Blind/2dtodepth/infile1/filename.jpg", user['idToken'])
-		url = storage.child(f"images/i{str(x)}.jpg").get_url(user['idToken'])
-		data = {f"i{str(x)}": f"{url}"}
-		db.child(f"users/{uid}").child("images").update(data)
+		# storage.child(f"images/i{str(x)}.jpg").put("D:/A-Eye For The Blind/2dtodepth/infile1/filename.jpg", user['idToken'])
+		# url = storage.child(f"images/i{str(x)}.jpg").get_url(user['idToken'])
+		# data = {f"i{str(x)}": f"{url}"}
+		# db.child(f"users/{uid}").child("images").update(data)
 		video_data_loader = aligned_data_loader.DAVISDataLoader(video_list, BATCH_SIZE)
 		video_dataset = video_data_loader.load_data()
 		for i, data in enumerate(video_dataset):
