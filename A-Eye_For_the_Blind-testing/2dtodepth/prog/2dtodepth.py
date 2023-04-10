@@ -81,16 +81,20 @@ def main():
 	best_epoch = 0
 	global_step = 0
 	model.switch_to_eval()
-	video_list = 'D:/A-Eye For The Blind/2dtodepth/infile1/'
-	save_path = 'D:/A-Eye For The Blind/2dtodepth/outfile/'
+	video_list = 'D:/Electrical Engineering/FYP/GitHub Repos/FYP-Aeye-Jetson/A-Eye_For_the_Blind-testing/2dtodepth/infile1/'
+	save_path = 'D:/Electrical Engineering/FYP/GitHub Repos/FYP-Aeye-Jetson/A-Eye_For_the_Blind-testing/2dtodepth/outfile/'
 	uid = 'yQowLXfAMddiITuMFASMoKlSGyh1'
 	# initialize the camera
-	cam = cv2.VideoCapture(cv2.CAP_DSHOW)  # 0 -> index of camera
+	cam = cv2.VideoCapture(2)  # 0 -> index of camera
 	x = 0
+	current_datetime = datetime.datetime.now()
+	date_string = current_datetime.date().strftime('%Y-%m-%d')
+	time_string = current_datetime.time().strftime('%H:%M:%S')
+
 	while True:
 		s, img = cam.read()
-		cv2.imwrite("D:/A-Eye For The Blind/2dtodepth/infile1/filename.jpg", img)  # save image
-		# filename = uid + ' ' + time()
+		cv2.imwrite('D:/Electrical Engineering/FYP/GitHub Repos/FYP-Aeye-Jetson/A-Eye_For_the_Blind-testing/2dtodepth/infile1/filename.jpg', img)  # save image
+		filename = f"{date_string} {time_string}"
 		# storage.child(f"images/i{str(x)}.jpg").put("D:/A-Eye For The Blind/2dtodepth/infile1/filename.jpg", user['idToken'])
 		# url = storage.child(f"images/i{str(x)}.jpg").get_url(user['idToken'])
 		# data = {f"i{str(x)}": f"{url}"}
@@ -100,11 +104,19 @@ def main():
 		for i, data in enumerate(video_dataset):
 			stacked_img = data[0]
 			targets = data[1]
+			# height=300
+			# width=300
 			output = model.run_and_save_DAVIS(stacked_img, targets, save_path)
+			
 			height, width, _ = output.shape
+			print(width)
+			print(height)
 			width_cutoff = width // 2
+			full1 = output[:, :width]
 			half1 = output[:, :width_cutoff]
 			half2 = output[:, width_cutoff:]
+			cv2.imshow('Full 1', full1)
+			print(width_cutoff)
 			width_cutoff = width // 4
 			s1 = half1[:, :width_cutoff]
 			s2 = half1[:, width_cutoff:]
@@ -122,7 +134,7 @@ def main():
 				else:
 					engine.say("Move left.")
 			engine.runAndWait()
-		os.remove("D:/A-Eye For The Blind/2dtodepth/infile1/filename.jpg")
+		os.remove("D:/Electrical Engineering/FYP/GitHub Repos/FYP-Aeye-Jetson/A-Eye_For_the_Blind-testing/2dtodepth/infile1/filename.jpg")
 		x += 1
 		if cv2.waitKey(33) == ord('a'):
 			break

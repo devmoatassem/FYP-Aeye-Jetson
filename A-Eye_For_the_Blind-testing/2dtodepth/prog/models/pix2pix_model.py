@@ -79,15 +79,15 @@ class Pix2PixModel(base_model.BaseModel):
             raise ValueError("Unknown input type %s" % opt.input)
 
         if self.mode == 'Ours_Bilinear':
-            # print(
-            #     '======================================  DIW NETWORK TRAIN FROM %s======================='
-            #     % self.mode)
+            print(
+                '======================================  DIW NETWORK TRAIN FROM %s======================='
+                % self.mode)
 
             new_model = hourglass.HourglassModel(self.num_input)
 
-            # print(
-            #     '===================Loading Pretrained Model OURS ==================================='
-            # )
+            print(
+                '===================Loading Pretrained Model OURS ==================================='
+            )
 
             if not _isTrain:
                 if self.num_input == 7:
@@ -105,8 +105,8 @@ class Pix2PixModel(base_model.BaseModel):
 
                 new_model.load_state_dict(model_parameters)
 
-            # new_model = torch.nn.parallel.DataParallel(
-            #     new_model.cuda(), device_ids=range(torch.cuda.device_count()))
+            new_model = torch.nn.parallel.DataParallel(
+                new_model, device_ids=range(torch.cuda.device_count()))
 
             self.netG = new_model
 
@@ -123,9 +123,9 @@ class Pix2PixModel(base_model.BaseModel):
             self.optimizer_G = torch.optim.Adam(
                 self.netG.parameters(), lr=opt.lr, betas=(0.9, 0.999))
             self.scheduler = networks.get_scheduler(self.optimizer_G, opt)
-            # print('---------- Networks initialized -------------')
-            # networks.print_network(self.netG)
-            # print('-----------------------------------------------')
+            print('---------- Networks initialized -------------')
+            networks.print_network(self.netG)
+            print('-----------------------------------------------')
 
     def set_writer(self, writer):
         self.writer = writer
@@ -148,19 +148,19 @@ class Pix2PixModel(base_model.BaseModel):
 
         if self.num_input == 7:
             input_log_depth = autograd.Variable(
-                self.targets['input_log_depth'].cuda(),
+                self.targets['input_log_depth'],
                 requires_grad=False).unsqueeze(1)
             input_confidence = autograd.Variable(
-                self.targets['input_confidence'].cuda(),
+                self.targets['input_confidence'],
                 requires_grad=False).unsqueeze(1)
             stack_inputs = torch.cat((self.input_images, human_mask, keypoints_img,
                                       input_log_depth, input_confidence), 1)
         elif self.num_input == 6:
             input_log_depth = autograd.Variable(
-                self.targets['input_log_depth'].cuda(),
+                self.targets['input_log_depth'],
                 requires_grad=False).unsqueeze(1)
             input_confidence = autograd.Variable(
-                self.targets['input_confidence'].cuda(),
+                self.targets['input_confidence'],
                 requires_grad=False).unsqueeze(1)
             stack_inputs = torch.cat(
                 (self.input_images, human_mask, input_log_depth, input_confidence), 1)
@@ -275,16 +275,16 @@ class Pix2PixModel(base_model.BaseModel):
 
         if self.num_input == 7:
             input_log_depth = autograd.Variable(
-                targets['input_log_depth'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_log_depth'], requires_grad=False).unsqueeze(1)
             input_confidence = autograd.Variable(
-                targets['input_confidence'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_confidence'], requires_grad=False).unsqueeze(1)
             stack_inputs = torch.cat((input_imgs, human_mask, keypoints_img,
                                       input_log_depth, input_confidence), 1)
         elif self.num_input == 6:
             input_log_depth = autograd.Variable(
-                targets['input_log_depth'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_log_depth'], requires_grad=False).unsqueeze(1)
             input_confidence = autograd.Variable(
-                targets['input_confidence'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_confidence'], requires_grad=False).unsqueeze(1)
             stack_inputs = torch.cat(
                 (input_imgs, human_mask, input_log_depth, input_confidence), 1)
         elif self.num_input == 3:
@@ -310,24 +310,24 @@ class Pix2PixModel(base_model.BaseModel):
         return sc_inv_errors
 
     def eval_save_tum_img(self, input_, targets, save_path):
-        input_imgs = autograd.Variable(input_.cuda())
+        input_imgs = autograd.Variable(input_)
         human_mask = 1.0 - autograd.Variable(
-            targets['env_mask'].cuda(), requires_grad=False).unsqueeze(1)
+            targets['env_mask'], requires_grad=False).unsqueeze(1)
         keypoints_img = autograd.Variable(
-            targets['keypoints_img'].cuda(), requires_grad=False).unsqueeze(1)
+            targets['keypoints_img'], requires_grad=False).unsqueeze(1)
 
         if self.num_input == 7:
             input_log_depth = autograd.Variable(
-                targets['input_log_depth'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_log_depth'], requires_grad=False).unsqueeze(1)
             input_confidence = autograd.Variable(
-                targets['input_confidence'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_confidence'], requires_grad=False).unsqueeze(1)
             stack_inputs = torch.cat((input_imgs, human_mask, keypoints_img,
                                       input_log_depth, input_confidence), 1)
         elif self.num_input == 6:
             input_log_depth = autograd.Variable(
-                targets['input_log_depth'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_log_depth'], requires_grad=False).unsqueeze(1)
             input_confidence = autograd.Variable(
-                targets['input_confidence'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_confidence'], requires_grad=False).unsqueeze(1)
             stack_inputs = torch.cat(
                 (input_imgs, human_mask, input_log_depth, input_confidence), 1)
         elif self.num_input == 3:
@@ -383,24 +383,24 @@ class Pix2PixModel(base_model.BaseModel):
                 '/prediction/human_mask', data=human_mask, dtype='float32')
 
     def evaluate_tum_error(self, input_, targets, n_iter, write_to_summary):
-        input_imgs = autograd.Variable(input_.cuda(), requires_grad=False)
+        input_imgs = autograd.Variable(input_, requires_grad=False)
         human_mask = 1.0 - autograd.Variable(
-            targets['env_mask'].cuda(), requires_grad=False).unsqueeze(1)
+            targets['env_mask'], requires_grad=False).unsqueeze(1)
         keypoints_img = autograd.Variable(
-            targets['keypoints_img'].cuda(), requires_grad=False).unsqueeze(1)
+            targets['keypoints_img'], requires_grad=False).unsqueeze(1)
 
         if self.num_input == 7:
             input_log_depth = autograd.Variable(
-                targets['input_log_depth'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_log_depth'], requires_grad=False).unsqueeze(1)
             input_confidence = autograd.Variable(
-                targets['input_confidence'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_confidence'], requires_grad=False).unsqueeze(1)
             stack_inputs = torch.cat((input_imgs, human_mask, keypoints_img,
                                       input_log_depth, input_confidence), 1)
         elif self.num_input == 6:
             input_log_depth = autograd.Variable(
-                targets['input_log_depth'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_log_depth'], requires_grad=False).unsqueeze(1)
             input_confidence = autograd.Variable(
-                targets['input_confidence'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_confidence'], requires_grad=False).unsqueeze(1)
             stack_inputs = torch.cat(
                 (input_imgs, human_mask, input_log_depth, input_confidence), 1)
         elif self.num_input == 3:
@@ -440,18 +440,18 @@ class Pix2PixModel(base_model.BaseModel):
 
         if self.num_input == 7:
             input_log_depth = autograd.Variable(
-                targets['input_log_depth'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_log_depth'], requires_grad=False).unsqueeze(1)
             input_confidence = autograd.Variable(
-                targets['input_confidence'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_confidence'], requires_grad=False).unsqueeze(1)
             stack_inputs = torch.cat((input_imgs, human_mask, keypoints_img,
                                       input_log_depth, input_confidence), 1)
         elif self.num_input == 6:
             human_mask = 1.0 - autograd.Variable(
-                targets['env_mask'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['env_mask'], requires_grad=False).unsqueeze(1)
             input_log_depth = autograd.Variable(
-                targets['input_log_depth'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_log_depth'], requires_grad=False).unsqueeze(1)
             input_confidence = autograd.Variable(
-                targets['input_confidence'].cuda(), requires_grad=False).unsqueeze(1)
+                targets['input_confidence'], requires_grad=False).unsqueeze(1)
             stack_inputs = torch.cat(
                 (input_imgs, human_mask, input_log_depth, input_confidence), 1)
         elif self.num_input == 3:
@@ -520,20 +520,20 @@ class Pix2PixModel(base_model.BaseModel):
             hdf5_file_write.close()
 
     def run_and_save_videos_prediction(self, input_, targets, save_path):
-        input_imgs = autograd.Variable(input_.cuda(), requires_grad=False)
+        input_imgs = autograd.Variable(input_, requires_grad=False)
 
         human_mask = 1.0 - autograd.Variable(
-            targets['env_mask'].cuda(), requires_grad=False).unsqueeze(1)
+            targets['env_mask'], requires_grad=False).unsqueeze(1)
         input_log_depth = autograd.Variable(
-            targets['input_log_depth'].cuda(), requires_grad=False).unsqueeze(1)
+            targets['input_log_depth'], requires_grad=False).unsqueeze(1)
         input_confidence = autograd.Variable(
-            targets['input_confidence'].cuda(), requires_grad=False).unsqueeze(1)
+            targets['input_confidence'], requires_grad=False).unsqueeze(1)
         keypoints_img = autograd.Variable(
-            targets['keypoints_img'].cuda(), requires_grad=False).unsqueeze(1)
+            targets['keypoints_img'], requires_grad=False).unsqueeze(1)
 
-        mvs_depth = autograd.Variable(targets['mvs_depth'].cuda(), requires_grad=False)
+        mvs_depth = autograd.Variable(targets['mvs_depth'], requires_grad=False)
         input_depth = autograd.Variable(
-            targets['input_depth'].cuda(), requires_grad=False)
+            targets['input_depth'], requires_grad=False)
 
         full_flow = targets['full_flow']
 
@@ -610,7 +610,7 @@ class Pix2PixModel(base_model.BaseModel):
 
             hdf5_file_write.close()
 
-    def run_and_save_DAVIS(self, input_, targets, save_path, img_shape):
+    def run_and_save_DAVIS(self, input_, targets, save_path):
         assert (self.num_input == 3)
         input_imgs = autograd.Variable(input_, requires_grad=False)
 
@@ -625,7 +625,7 @@ class Pix2PixModel(base_model.BaseModel):
 
         for i in range(0, len(targets['img_1_path'])):
 
-            youtube_dir = save_path + targets['img_1_path'][i].split('/')[-2]
+            youtube_dir = (save_path + targets['img_1_path'][i]).split('/')[-2]
 
             if not os.path.exists(youtube_dir):
                 os.makedirs(youtube_dir)
@@ -637,28 +637,29 @@ class Pix2PixModel(base_model.BaseModel):
 
             output_path = youtube_dir + '/' + \
                 targets['img_1_path'][i].split('/')[-1]
-            output_depth_path = youtube_dir + '/' + \
-                targets['img_1_path'][i].split('/')[-1].split('.')[0] + '_depth.npy'
-            # print(output_depth_path, pred_d_ref.shape, pred_d_ref.max(), pred_d_ref.min(), pred_d_ref.dtype)
-            import matplotlib.pyplot as plt
-            import matplotlib
-            import cv2
-            pred_d_ref_resize = cv2.resize(pred_d_ref/10.,(img_shape[1],img_shape[0]), interpolation=cv2.INTER_LINEAR)
-            pred_d_m = cv2.resize(pred_d_ref, (img_shape[1],img_shape[0]), interpolation=cv2.INTER_LINEAR)
-            np.save(output_depth_path, cv2.resize(pred_d_ref, (img_shape[1],img_shape[0]), interpolation=cv2.INTER_LINEAR))
-            # matplotlib.use('TKAgg')
-            # plt.imshow(pred_d_ref_resize, cmap = 'gray')
-            # plt.show()
-            imsave(output_path, (pred_d_ref_resize*255.).astype(np.uint8))
-            # print(output_path)
+            
+
+
+            
+            print(output_path)
             disparity = 1. / pred_d_ref
             disparity = disparity / np.max(disparity)
             disparity = np.tile(np.expand_dims(disparity, axis=-1), (1, 1, 3))
             saved_imgs = np.concatenate((saved_img, disparity), axis=1)
             saved_imgs = (saved_imgs*255).astype(np.uint8)
-            return pred_d_m
-            # imsave(output_path, saved_imgs)
-            # imsave(output_path, (disparity*255).astype(np.uint8))
+            import cv2
+            #imsave(output_path, saved_imgs)
+            output = cv2.cvtColor(saved_imgs, cv2.COLOR_RGB2BGR)
+            height, width, _ = output.shape
+            print(width)
+            width_cutoff = width // 2
+            half1 = output[:, :width_cutoff]
+            half2 = output[:, width_cutoff:]
+
+            imsave(output_path, half2)
+
+            #return height, width
+            return(half2)
 
     def switch_to_train(self):
         self.netG.train()

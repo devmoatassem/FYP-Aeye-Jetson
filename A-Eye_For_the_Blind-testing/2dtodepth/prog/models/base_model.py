@@ -65,7 +65,7 @@ class BaseModel():
         save_filename = '%s_net_%s.pth' % (epoch_label, network_label)
         save_path = os.path.join(self.save_dir, save_filename)
         print(save_path)
-        model = torch.load(save_path)
+        model = torch.load('D:/Electrical Engineering/FYP/GitHub Repos/FYP-Aeye-Jetson/A-Eye_For_the_Blind-testing/2dtodepth/checkpoints/test_local/best_depth_Ours_Bilinear_inc_3_net_G.pth')
         return model
         # network.load_state_dict(torch.load(save_path))
 
