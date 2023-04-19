@@ -9,7 +9,10 @@
 - ### Azure Notebooks for ML Train
 >https://learn.microsoft.com/en-us/azure/machine-learning/how-to-run-jupyter-notebooks?view=azureml-api-2
 
+- ### YouTube Video Object Detection Implementation from Jetson Inference
+>https://www.youtube.com/watch?v=mB025B7KpeE
 
+#
 # _**Depth Analysis**_ 
 ## 1. Libraries Installation
 
