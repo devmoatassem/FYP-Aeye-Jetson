@@ -85,20 +85,20 @@ def main():
 	model.switch_to_eval()
 	video_list = 'infile1/'
 	save_path = 'outfile/'
-	uid = 'yQowLXfAMddiITuMFASMoKlSGyh1'
+	# uid = 'yQowLXfAMddiITuMFASMoKlSGyh1'
 	# initialize the camera
 	cam = cv2.VideoCapture(0)  # 0 -> index of camera
 	x = 0
 	current_datetime = datetime.datetime.now()
-	date_string = current_datetime.date().strftime('%Y-%m-%d')
-	time_string = current_datetime.time().strftime('%H:%M:%S')
+	# date_string = current_datetime.date().strftime('%Y-%m-%d')
+	# time_string = current_datetime.time().strftime('%H:%M:%S')
 
 	while True:
 		s, img = cam.read()
 		#cv2.imread('E:/FYP/A-Eye_For_the_Blind-testing/2dtodepth/infile/Walking-slowly-busy-sidewalk.jpg', cv2.IMREAD_COLOR)  # save image
 		
 		cv2.imwrite('infile1/filename.jpg', img)  # save image
-		filename = f"{date_string} {time_string}"
+		# filename = f"{date_string} {time_string}"
 		# storage.child(f"images/i{str(x)}.jpg").put("D:/A-Eye For The Blind/2dtodepth/infile1/filename.jpg", user['idToken'])
 		# url = storage.child(f"images/i{str(x)}.jpg").get_url(user['idToken'])
 		# data = {f"i{str(x)}": f"{url}"}
